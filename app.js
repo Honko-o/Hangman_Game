@@ -6,7 +6,7 @@ let wrongTries = 0;
 const hiddenHangmanParts = Array.from(
     document.querySelectorAll('.hangman-draw .hidden')
 );
-const gameEndPopup = document.querySelector('.popup');
+const gameEndPopup = document.querySelectorAll('.popup');
 const successAudio = document.getElementById('audio-success');
 const failAudio = document.getElementById('audio-fail');
 successAudio.pause();
@@ -88,12 +88,22 @@ document.querySelectorAll('.letter-box').forEach((letter) => {
     );
 });
 
+const isGameCompleted = () => {
+    isCompleted = true;
+    guessBoxes.forEach((gamebox) => {
+        if (gamebox.innerHTML === '') {
+            isCompleted = false;
+            return false;
+        }
+    });
+    return isCompleted;
+};
+
 // Clicking Letters Logic End
 function checkClickedLetter(letter) {
     const letterVal = letter.innerText.toUpperCase();
 
     if (randomCategoryValue.indexOf(letterVal) !== -1) {
-        // Change Here
         if (!successAudio.paused || !failAudio.paused) {
             failAudio.pause();
             successAudio.currentTime = 0;
@@ -110,12 +120,16 @@ function checkClickedLetter(letter) {
                 letter.classList.add('clicked');
             }
         });
+        if (isGameCompleted()) {
+            lettersContainer.classList.add('finished');
+            gameEndPopup[1].classList.add('finished');
+            return false;
+        }
     } else {
         letter.classList.add('clicked');
         hiddenHangmanParts[wrongTries].classList.remove('hidden');
         wrongTries++;
         console.log(wrongTries);
-        // Change Here
         if (!successAudio.paused || !failAudio.paused) {
             successAudio.pause();
             successAudio.currentTime = 0;
@@ -128,7 +142,7 @@ function checkClickedLetter(letter) {
         }
         if (hiddenHangmanParts[wrongTries] === undefined) {
             lettersContainer.classList.add('finished');
-            gameEndPopup.classList.add('finished');
+            gameEndPopup[0].classList.add('finished');
             return false;
         }
     }

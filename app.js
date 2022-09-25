@@ -93,7 +93,17 @@ function checkClickedLetter(letter) {
     const letterVal = letter.innerText.toUpperCase();
 
     if (randomCategoryValue.indexOf(letterVal) !== -1) {
-        successAudio.play();
+        // Change Here
+        if (!successAudio.paused || !failAudio.paused) {
+            failAudio.pause();
+            successAudio.currentTime = 0;
+            failAudio.currentTime = 0;
+            successAudio.play();
+        } else {
+            successAudio.currentTime = 0;
+            failAudio.currentTime = 0;
+            successAudio.play();
+        }
         guessBoxes.forEach((box) => {
             if (box.dataset.letter === letterVal) {
                 box.innerText = letterVal;
@@ -105,7 +115,17 @@ function checkClickedLetter(letter) {
         hiddenHangmanParts[wrongTries].classList.remove('hidden');
         wrongTries++;
         console.log(wrongTries);
-        failAudio.play();
+        // Change Here
+        if (!successAudio.paused || !failAudio.paused) {
+            successAudio.pause();
+            successAudio.currentTime = 0;
+            failAudio.currentTime = 0;
+            failAudio.play();
+        } else {
+            successAudio.currentTime = 0;
+            failAudio.currentTime = 0;
+            failAudio.play();
+        }
         if (hiddenHangmanParts[wrongTries] === undefined) {
             lettersContainer.classList.add('finished');
             gameEndPopup.classList.add('finished');
